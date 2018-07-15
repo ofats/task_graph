@@ -1,6 +1,7 @@
+#ifndef _ADVANCED_FUTURE_H_
+#define _ADVANCED_FUTURE_H_
+
 #include <future>
-#include <iostream>
-#include <cassert>
 
 template <typename R>
 struct my_future;
@@ -24,17 +25,14 @@ struct my_future {
             std::move(future_), std::forward<Args>(args)...);
     }
 
-    R get() {
-        return future_.get();
-    }
+    R get() { return future_.get(); }
 
-    bool valid() {
-        return future_.valid();
-    }
+    bool valid() { return future_.valid(); }
 };
 
 template <>
 struct my_future<void> {
+  public:
     std::future<void> future_;
     my_future(std::future<void> future) : future_(std::move(future)) {}
 
@@ -49,23 +47,18 @@ struct my_future<void> {
             std::move(future_), std::forward<Args>(args)...);
     }
 
-    void get() {
-        return future_.get();
-    }
+    void get() { future_.get(); }
 
-    bool valid() {
-        return future_.valid();
-    }
+    bool valid() { return future_.valid(); }
 };
 
 template <typename F, typename... Deps>
 my_future<std::invoke_result_t<
-    std::decay_t<F>,
-    decltype(std::declval<std::decay_t<Deps>>().get())...>>
-contraction(F&& f, Deps&&... deps) {
+    std::decay_t<F>, decltype(std::declval<Deps>().get())...>>
+contraction(F&& f, Deps... deps) {
     return my_async(
         [f = std::forward<F>(f)](auto... deps) { return f(deps.get()...); },
-        std::forward<Deps>(deps)...);
+        std::move(deps)...);
 }
 
 template <typename F, typename... Args>
@@ -74,42 +67,4 @@ my_async(F&& f, Args&&... args) {
     return std::async(std::forward<F>(f), std::forward<Args>(args)...);
 }
 
-int test() {
-    auto future = my_async([](int a, int b) { return a + b; }, 3, 4)
-                      .then([](int c, int d) { return c * d; }, 5);
-    return future.get();
-}
-
-int test2() {
-    return contraction(
-               [](int a, int b, int c) { return a + b * c; },
-               my_async([] { return 2; }),
-               contraction(
-                   [](int a, int b) { return a + b; },
-                   my_async([](int a, int b) { return a * b; }, 5, 6),
-                   my_async([] { return 2; })),
-               my_async([] { return 2; }))
-        .get();
-}
-
-int test3() {
-    auto f1 = my_async([](int a, int b) { return a * b + 5; }, 2, 3);
-    auto f2 = f1.then([](int a, int b) { return a + b; }, 25);
-    assert(!f1.valid());
-    return f2.get();
-}
-
-void test4() {
-    auto f1 =
-        my_async([](int a, int b) { std::cout << a * b << std::endl; }, 2, 3)
-            .then([](int a, int b) { std::cout << a + b << std::endl; }, 4, 5);
-    f1.get();
-}
-
-int main() {
-    std::cout << test() << std::endl;
-    std::cout << test2() << std::endl;
-    std::cout << test3() << std::endl;
-    test4();
-    return 0;
-}
+#endif  // _ADVANCED_FUTURE_H_
