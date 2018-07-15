@@ -2,8 +2,6 @@ enable_testing()
 
 project(future_ut)
 
-include_directories(./)
-
 set(SOURCE_FILES
     future_ut.cpp)
 

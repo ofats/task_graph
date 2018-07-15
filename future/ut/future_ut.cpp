@@ -38,3 +38,11 @@ TEST_CASE("test_void_future", "[advanced_future]") {
     f1.get();
     REQUIRE(os.str() == "6\n9\n");
 }
+
+TEST_CASE("test_long_chain", "[advanced_future]") {
+    auto f = my_async([] { return 1; })
+                 .then([](auto a) { return a * 2; })
+                 .then([](auto a) { return a + 3; })
+                 .then([](auto a) { return a * a; });
+    REQUIRE(f.get() == ((1 * 2) + 3) * ((1 * 2) + 3));
+}
