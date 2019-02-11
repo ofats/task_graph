@@ -12,4 +12,5 @@ project(advanced_future)
 include_directories(./)
 
 add_subdirectory(future)
+add_subdirectory(task_runner)
 add_subdirectory(catch)
