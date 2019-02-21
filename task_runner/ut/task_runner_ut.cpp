@@ -104,7 +104,6 @@ TEST_CASE("exec_nodes_all_test", "[exec_nodes]") {
 }
 
 TEST_CASE("exec_nodes_all_big_test", "[exec_nodes]") {
-    DBG_OUT("exec_nodes_all_big_test start");
     std::vector<int> v;
     base::simple_task_runner tr;
     std::mutex mtx;
@@ -149,7 +148,6 @@ TEST_CASE("exec_nodes_all_big_test", "[exec_nodes]") {
     base::exec_nodes::sync_execute(&tr, &node, [](base::nothing) {});
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     REQUIRE(std::count(v.begin(), v.end(), 1) == 2);
-    DBG_OUT("exec_nodes_all_big_test finish");
 }
 
 TEST_CASE("exec_nodes_eval_test", "[exec_nodes]") {

@@ -70,7 +70,6 @@ struct leaf : F {
     template <class TaskRunner, class Then, class... Args>
     void execute(TaskRunner* const tr, Then then, Args... args) & {
         assert(tr != nullptr);
-        DBG_OUT("execute leaf tid: " << std::this_thread::get_id());
         if constexpr (std::is_void_v<std::invoke_result_t<F, Args...>>) {
             (*this)(std::move(args)...);
             std::move(then)(nothing_v);
@@ -99,7 +98,6 @@ struct seq : A, B {
     template <class TaskRunner, class Then, class... Args>
     void execute(TaskRunner* const tr, Then then, Args... args) & {
         assert(tr != nullptr);
-        DBG_OUT("execute seq tid: " << std::this_thread::get_id());
         A::execute(tr,
                    [tr, f = static_cast<B*>(this),
                     then = std::move(then)](auto... a_args) mutable {
@@ -128,7 +126,6 @@ struct all : Fs... {
     template <class TaskRunner, class Then, class... Args>
     void execute(TaskRunner* const tr, Then then, Args... args) & {
         assert(tr != nullptr);
-        DBG_OUT("execute all tid: " << std::this_thread::get_id());
         execute_impl(tr, std::move(then), std::index_sequence_for<Fs...>{},
                      std::move(args)...);
     }
@@ -151,8 +148,6 @@ struct all : Fs... {
                                      std::get<Is>(state->result) =
                                          std::forward<decltype(result)>(result);
                                      if (state->left.fetch_sub(1) == 1) {
-                                         DBG_OUT("all's then call tid: "
-                                                 << std::this_thread::get_id());
                                          state->then(std::move(state->result));
                                          delete state;
                                      }
@@ -229,7 +224,6 @@ void sync_execute(TaskRunner* tr, ExecTree* tree, Then then, Args... args) {
                       finish_event.notify();
                   },
                   std::move(args)...);
-    DBG_OUT("waiting tid: " << std::this_thread::get_id());
     finish_event.wait();
 }
 
