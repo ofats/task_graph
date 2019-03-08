@@ -53,7 +53,7 @@ class notification_queue {
     std::mutex queue_mtx_;
 };
 
-}  // class notification_queue
+}  // namespace detail
 
 class simple_task_system {
   public:

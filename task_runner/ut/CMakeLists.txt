@@ -3,8 +3,9 @@ enable_testing()
 project(task_runner_ut)
 
 set(SOURCE_FILES
-    task_system_ut.cpp
-    task_runner_ut.cpp)
+    task_graph_ut.cpp
+    task_runner_ut.cpp
+    task_system_ut.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
