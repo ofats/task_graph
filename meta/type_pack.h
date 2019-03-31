@@ -2,6 +2,7 @@
 #define _TYPE_PACK_H_
 
 #include <algorithm>
+#include <functional>
 #include <type_traits>
 #include <utility>
 
@@ -101,7 +102,7 @@ constexpr auto make_pack(just_type<Ts>...) {
 
 template <class F, class... Ts>
 constexpr decltype(auto) apply(F f, type_pack<Ts...>) {
-    return f(just_type_v<Ts>...);
+    return std::invoke(f, just_type_v<Ts>...);
 }
 
 template <template <class...> class F>
