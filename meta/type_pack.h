@@ -108,7 +108,7 @@ constexpr decltype(auto) apply(F f, type_pack<Ts...>) {
 template <template <class...> class F>
 struct value_fn {
     template <class... Ts>
-    constexpr auto operator()(just_type<Ts...>) {
+    constexpr auto operator()(just_type<Ts>...) {
         return F<Ts...>::value;
     }
 };
@@ -119,7 +119,7 @@ constexpr value_fn<F> value_fn_v;
 template <template <class...> class F>
 struct type_fn {
     template <class... Ts>
-    constexpr auto operator()(just_type<Ts...>) {
+    constexpr auto operator()(just_type<Ts>...) {
         return just_type_v<subtype<F<Ts...>>>;
     }
 };
@@ -225,6 +225,8 @@ constexpr std::size_t find_if(type_pack<Ts...> tp) {
     return size(tp);
 }
 
+static_assert(find_if<std::is_pointer>(type_pack_v<int, double*, char>) == 1);
+
 // value-based
 template <class F, class... Ts>
 constexpr std::size_t find_if(F f, type_pack<Ts...> tp) {
@@ -237,7 +239,7 @@ constexpr std::size_t find_if(F f, type_pack<Ts...> tp) {
     return size(tp);
 }
 
-static_assert(find_if<std::is_pointer>(type_pack_v<int, double*, char>) == 1);
+static_assert(find_if(value_fn_v<std::is_pointer>, type_pack_v<int, double*, char>) == 1);
 
 // ==================== any, all, none of ====================
 
@@ -330,6 +332,23 @@ constexpr auto get(type_pack<Ts...>) {
 }
 
 static_assert(get<1>(type_pack_v<double, int, char>) == just_type_v<int>);
+
+namespace detail {
+
+template <std::size_t... is, class TP>
+constexpr auto fast_reverse_impl(std::index_sequence<is...>, TP tp) {
+    return type_pack_v<subtype<decltype(get<size(tp) - is - 1>(tp))>...>;
+}
+
+}  // namespace detail
+
+template <class... Ts>
+constexpr auto fast_reverse(type_pack<Ts...> tp) {
+    return detail::fast_reverse_impl(std::index_sequence_for<Ts...>{}, tp);
+}
+
+static_assert(fast_reverse(type_pack_v<int, double, char>) == type_pack_v<char, double, int>);
+static_assert(fast_reverse(empty_pack_v) == empty_pack_v);
 
 // ==================== generate ====================
 
