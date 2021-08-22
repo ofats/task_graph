@@ -1,8 +1,9 @@
+#include "task_runner.h"
+
 #include <iostream>
 
 #include "catch2/catch_all.hpp"
-#include "task_runner/event.h"
-#include "task_runner/task_runner.h"
+#include "event.h"
 
 namespace {
 

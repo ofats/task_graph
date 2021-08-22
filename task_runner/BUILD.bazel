@@ -35,7 +35,7 @@ cc_library(
 
 cc_test(
     name = "task_system_test",
-    srcs = ["ut/task_system_ut.cpp"],
+    srcs = ["task_system_test.cpp"],
     copts = ["-std=c++17"],
     deps = [
         ":event",
@@ -46,7 +46,7 @@ cc_test(
 
 cc_test(
     name = "task_runner_test",
-    srcs = ["ut/task_runner_ut.cpp"],
+    srcs = ["task_runner_test.cpp"],
     copts = ["-std=c++17"],
     deps = [
         ":event",
@@ -57,7 +57,7 @@ cc_test(
 
 cc_test(
     name = "task_graph_test",
-    srcs = ["ut/task_runner_ut.cpp"],
+    srcs = ["task_runner_test.cpp"],
     copts = ["-std=c++17"],
     deps = [
         ":event",

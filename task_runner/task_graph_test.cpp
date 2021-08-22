@@ -1,10 +1,11 @@
+#include "task_graph.h"
+
 #include <numeric>
 #include <set>
 
 #include "catch2/catch_all.hpp"
-#include "task_runner/event.h"
-#include "task_runner/task_graph.h"
-#include "task_runner/task_runner.h"
+#include "event.h"
+#include "task_runner.h"
 
 namespace tg = base::task_graph;
 
