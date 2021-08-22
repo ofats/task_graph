@@ -1,8 +1,8 @@
-#include "future/future.h"
-#include "catch/catch.h"
-
 #include <iostream>
 #include <sstream>
+
+#include "catch2/catch_all.hpp"
+#include "future/future.h"
 
 TEST_CASE("test_then", "[advanced_future]") {
     auto future = my_async([](int a, int b) { return a + b; }, 3, 4)

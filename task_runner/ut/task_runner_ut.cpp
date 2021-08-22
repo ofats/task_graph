@@ -1,9 +1,8 @@
-#include "task_runner/task_runner.h"
-
 #include <iostream>
 
-#include "catch/catch.h"
+#include "catch2/catch_all.hpp"
 #include "task_runner/event.h"
+#include "task_runner/task_runner.h"
 
 namespace {
 
@@ -60,10 +59,12 @@ TEMPLATE_PRODUCT_TEST_CASE("task_runner_test", "[task_runner]",
     SECTION("Task can be lambda with args") {
         int result = 0;
         base::manual_event event;
-        task_runner.run([&](int a, int b, int c) {
-            result = a + b + c;
-            event.notify();
-        }, 1, 2, 3);
+        task_runner.run(
+            [&](int a, int b, int c) {
+                result = a + b + c;
+                event.notify();
+            },
+            1, 2, 3);
         event.wait();
         REQUIRE(result == 1 + 2 + 3);
     }

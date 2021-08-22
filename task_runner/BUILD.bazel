@@ -1,0 +1,67 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "event",
+    hdrs = ["event.h"],
+    copts = ["-std=c++17"],
+    # TODO(ofats): pthread linking should be conditional on platform
+    linkopts = ["-pthread"],
+    linkstatic = True,
+)
+
+cc_library(
+    name = "task_runner",
+    srcs = ["task_system.cpp"],
+    hdrs = [
+        "task_runner.h",
+        "task_system.h",
+    ],
+    copts = ["-std=c++17"],
+    # TODO(ofats): pthread linking should be conditional on platform
+    linkopts = ["-pthread"],
+    linkstatic = True,
+)
+
+cc_library(
+    name = "task_graph",
+    hdrs = ["task_graph.h"],
+    copts = ["-std=c++17"],
+    linkstatic = True,
+    deps = [
+        ":event",
+    ],
+)
+
+cc_test(
+    name = "task_system_test",
+    srcs = ["ut/task_system_ut.cpp"],
+    copts = ["-std=c++17"],
+    deps = [
+        ":event",
+        ":task_runner",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_test(
+    name = "task_runner_test",
+    srcs = ["ut/task_runner_ut.cpp"],
+    copts = ["-std=c++17"],
+    deps = [
+        ":event",
+        ":task_runner",
+        "@catch2//:catch2_main",
+    ],
+)
+
+cc_test(
+    name = "task_graph_test",
+    srcs = ["ut/task_runner_ut.cpp"],
+    copts = ["-std=c++17"],
+    deps = [
+        ":event",
+        ":task_graph",
+        ":task_runner",
+        "@catch2//:catch2_main",
+    ],
+)

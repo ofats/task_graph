@@ -1,0 +1,20 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "future",
+    hdrs = ["future.h"],
+    copts = ["-std=c++17"],
+    # TODO(ofats): pthread linking should be conditional on platform
+    linkopts = ["-pthread"],
+    linkstatic = True,
+)
+
+cc_test(
+    name = "future_test",
+    srcs = ["ut/future_ut.cpp"],
+    copts = ["-std=c++17"],
+    deps = [
+        ":future",
+        "@catch2//:catch2_main",
+    ],
+)
