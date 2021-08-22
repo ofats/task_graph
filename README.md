@@ -1,21 +1,6 @@
 # Advanced future
 An std::future powerfull addition that enables `then` and `contraction` operations.
 
-# How to build it?
-In debug mode:
-```
-: ./build_debug.sh
-```
-In release mode:
-```
-: ./build_release.sh
-```
-
-# How to test it?
-```
-: ./run_tests.sh
-```
-
 # Usage examples
 Suppose we want to execute some task right after finish of some other task.
 We can do it very simply:
