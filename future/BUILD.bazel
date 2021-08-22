@@ -11,7 +11,7 @@ cc_library(
 
 cc_test(
     name = "future_test",
-    srcs = ["future_test.cpp"],
+    srcs = ["future_test.cc"],
     copts = ["-std=c++17"],
     deps = [
         ":future",
